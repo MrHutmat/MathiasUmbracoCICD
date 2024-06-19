@@ -415,4 +415,5 @@ healthchecksdb
 **/Views/Partials/Forms/Themes/bootstrap3-horizontal/
 **/Views/Partials/Forms/Themes/default/
 
+# CICD configs
 **/git-patch.diff
