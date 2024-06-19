@@ -13,7 +13,7 @@ jobs:
     secrets:
       projectId: ${{ secrets.PROJECT_ID }}
       umbracoCloudApiKey: ${{ secrets.UMBRACO_CLOUD_API_KEY }}
-      
+
   # Package and Deploy to Umbraco Cloud
   cloud-deployment:
     needs: cloud-sync

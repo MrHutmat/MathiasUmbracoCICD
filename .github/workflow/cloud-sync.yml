@@ -22,12 +22,13 @@ jobs:
       - uses: actions/checkout@v3
       - name: Get Latest Deployment
         id: latest-deployment
-        shell: pwsh
+        shell: bash
         run: >
-          ${{GITHUB.WORKSPACE}}/.github/powershell/Get-LatestDeployment.ps1 
-          -ProjectId ${{ env.projectId }} 
-          -ApiKey ${{ env.umbracoCloudApiKey }} 
-          -PipelineVendor GITHUB
+          bash ${{GITHUB.WORKSPACE}}/.github/scripts/get_latest_deployment.sh
+          ${{ env.projectId }} 
+          ${{ env.umbracoCloudApiKey }} 
+          GITHUB
+         
     outputs: 
       latestDeployemntId: ${{ steps.latest-deployment.outputs.latestDeploymentId }}
 
@@ -45,14 +46,14 @@ jobs:
           latestDeploymentId: ${{ needs.preflight.outputs.latestDeployemntId }}
         if: ${{ env.latestDeploymentId != '' }}
         id: latest-changes
-        shell: pwsh
+        shell: bash
         run: >
-          ${{GITHUB.WORKSPACE}}/.github/powershell/Get-ChangesById.ps1 
-          -ProjectId ${{ env.projectId }} 
-          -ApiKey ${{ env.umbracoCloudApiKey }} 
-          -DeploymentId ${{ env.latestDeploymentId }}
-          -DownloadFolder ${{GITHUB.WORKSPACE}}/patch
-          -PipelineVendor GITHUB
+          bash ${{GITHUB.WORKSPACE}}/.github/scripts/get_changes_by_id.sh 
+          ${{ env.projectId }} 
+          ${{ env.umbracoCloudApiKey }} 
+          ${{ env.latestDeploymentId }}
+          ${{GITHUB.WORKSPACE}}/patch
+          GITHUB
 
       - name: See diff content if any
         if: ${{ steps.latest-changes.outputs.remoteChanges == 'yes' }}

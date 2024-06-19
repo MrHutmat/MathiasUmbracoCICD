@@ -55,33 +55,33 @@ jobs:
       # - supplies you with a deploymentId to be used in the rest of the process
       - name: Create Deployment Meta
         id: deployment-meta
-        shell: pwsh
+        shell: bash
         run: >
-          ${{GITHUB.WORKSPACE}}/.github/powershell/New-Deployment.ps1 
-          -ProjectId ${{ env.projectId }} 
-          -ApiKey ${{ env.umbracoCloudApiKey }} 
-          -CommitMessage "Run number ${{github.run_number}}" 
-          -PipelineVendor GITHUB
+          bash ${{GITHUB.WORKSPACE}}/.github/scripts/create_deployment.sh
+          ${{ env.projectId }} 
+          ${{ env.umbracoCloudApiKey }} 
+          "Run number ${{github.run_number}}" 
+          GITHUB
 
       # Upload your zipped artifact
       - name: Post Zipped Artifact
-        shell: pwsh
+        shell: bash
         run: >
-          ${{GITHUB.WORKSPACE}}/.github/powershell/Add-DeploymentPackage.ps1 
-          -ProjectId ${{ env.projectId }} 
-          -DeploymentId ${{ steps.deployment-meta.outputs.deploymentId }} 
-          -ApiKey ${{ env.umbracoCloudApiKey }} 
-          -FilePath ${{ GITHUB.WORKSPACE }}/sources.zip
-
+          bash ${{GITHUB.WORKSPACE}}/.github/scripts/upload_package.sh 
+          ${{ env.projectId }} 
+          ${{ steps.deployment-meta.outputs.deploymentId }} 
+          ${{ env.umbracoCloudApiKey }} 
+          ${{ GITHUB.WORKSPACE }}/sources.zip
+         
       # Actually request to start the deployment process in cloud
       - name: Request Start Deployment
-        shell: pwsh
+        shell: bash
         run: >
-          ${{GITHUB.WORKSPACE}}/.github/powershell/Start-Deployment.ps1 
-          -ProjectId ${{ env.projectId }} 
-          -DeploymentId ${{ steps.deployment-meta.outputs.deploymentId }} 
-          -ApiKey ${{ env.umbracoCloudApiKey }}
-
+          bash ${{GITHUB.WORKSPACE}}/.github/scripts/start_deployment.sh 
+          ${{ env.projectId }} 
+          ${{ steps.deployment-meta.outputs.deploymentId }} 
+          ${{ env.umbracoCloudApiKey }}
+         
   awaitDeploymentFinished:
     name: Await deployment to finish
     runs-on: ubuntu-latest
@@ -91,11 +91,12 @@ jobs:
 
       # Poll until deployment finishes 
       - name: Wait for deployment completed 
-        shell: pwsh
+        shell: bash
         env: 
           runningDeploymentId: ${{ needs.callUmbracoApi.outputs.runningDeploymentId }}
         run: >
-          ${{GITHUB.WORKSPACE}}/.github/powershell/Test-DeploymentStatus.ps1 
-          -ProjectId ${{ env.projectId }} 
-          -DeploymentId ${{ env.runningDeploymentId }} 
-          -ApiKey ${{ env.umbracoCloudApiKey }}
+          bash ${{GITHUB.WORKSPACE}}/.github/scripts/get_deployment_status.sh 
+          ${{ env.projectId }} 
+          ${{ env.runningDeploymentId }} 
+          ${{ env.umbracoCloudApiKey }}
+        
