@@ -6,6 +6,12 @@
       "Id": "060890b1-90e4-4ded-9fc0-501d8233de22",
       "Workspaces": [
         {
+          "Id": "51974925-2418-4b3f-8efb-a9ec3614d666",
+          "Name": "Development",
+          "Type": "development",
+          "Url": "https://dev-mathias-cicd-v14.euwest01.umbraco.io"
+        },
+        {
           "Id": "4e475851-a05c-4f9e-acd5-8cf6e1699fc5",
           "Name": "Live",
           "Type": "live",
